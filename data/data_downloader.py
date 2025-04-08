@@ -3,7 +3,6 @@ import os
 import pandas as pd
 
 SECTORS = range(1, 27)
-CACHE_FILE = "exofop_toi.csv"
 
 
 def get_toi_df() -> pd.DataFrame:
@@ -13,15 +12,15 @@ def get_toi_df() -> pd.DataFrame:
     :return: TOIs list as a pandas.DataFrame
     """
     exofop_toi_url = "https://exofop.ipac.caltech.edu/tess/download_toi.php?sort=toi?&output=csv"
-
-    if os.path.exists(CACHE_FILE):
-        print(f"Loading TOI data from cache: {CACHE_FILE}")
-        toi_df = pd.read_csv(CACHE_FILE)
+    cache_file = "exofop_toi.csv"
+    if os.path.exists(cache_file):
+        print(f"Loading TOI data from cache: {cache_file}")
+        toi_df = pd.read_csv(cache_file)
     else:
         print(f"Downloading TOI data from: {exofop_toi_url}")
         toi_df = pd.read_csv(exofop_toi_url)
-        toi_df.to_csv(CACHE_FILE, index=False)
-        print(f"Cached TOI data to: {CACHE_FILE}")
+        toi_df.to_csv(cache_file, index=False)
+        print(f"Cached TOI data to: {cache_file}")
 
     return toi_df
 
