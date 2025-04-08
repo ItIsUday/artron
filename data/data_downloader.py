@@ -52,6 +52,20 @@ def get_tic_to_sectors(toi_df: pd.DataFrame) -> dict[int, list[int]]:
     return tic_dict
 
 
+def generate_uri(tic: str, sector: str) -> str:
+    tic = tic.rjust(16, '0')
+    sector = 's' + sector.rjust(4, '0')
+    target = '/'.join(tic[i:i + 4] for i in range(0, len(tic), 4))
+
+    uri = f"mast:HLSP/tess-spoc/{sector}/target/{target}/hlsp_tess-spoc_tess_phot_{tic}-{sector}_tess_v1_lc.fits"
+    return uri
+
+
+def download_fits_of_tic(mission, tic: str, sector: int) -> None:
+    result = mission.download_file(generate_uri(tic, sector), local_path="")
+    print(result)
+
+
 def main():
     toi_df = get_toi_df()
     toi_df = filter_positive_toi_df(toi_df)
