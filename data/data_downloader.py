@@ -35,7 +35,7 @@ def filter_positive_toi_df(toi_df: pd.DataFrame) -> pd.DataFrame:
     return toi_df[toi_df['TFOPWG Disposition'].isin(['CP', 'KP'])]
 
 
-def get_tic_to_sectors(toi_df: pd.DataFrame) -> dict[int, list[int]]:
+def get_tic_to_sectors(toi_df: pd.DataFrame) -> dict[str, list[str]]:
     """
     Given the toi_df, it generates a dictionary mapping TIC ID to list of sectors in the given range.
 
@@ -44,7 +44,7 @@ def get_tic_to_sectors(toi_df: pd.DataFrame) -> dict[int, list[int]]:
     """
     tic_dict = {}
     for tic, sectors in zip(toi_df['TIC ID'], toi_df['Sectors']):
-        sectors = list(filter(lambda sector: sector in SECTORS, map(int, sectors.split(','))))
+        sectors = list(filter(lambda sector: sector in SECTORS, sectors.split(',')))
         if sectors:
             tic_dict[tic] = sectors
 
