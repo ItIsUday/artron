@@ -1,6 +1,7 @@
 import os
 
 import pandas as pd
+from astroquery.mast import MastMissions, MastMissionsClass
 
 SECTORS = range(1, 27)
 
@@ -52,6 +53,13 @@ def get_tic_to_sectors(toi_df: pd.DataFrame) -> dict[str, list[str]]:
 
 
 def generate_uri(tic: str, sector: str) -> str:
+    """
+    Given a TIC ID and a sector, generate the TESS SPOC URI.
+
+    :param tic: TIC ID
+    :param sector: The sector of the TIC
+    :return: The URI
+    """
     tic = tic.rjust(16, '0')
     sector = 's' + sector.rjust(4, '0')
     target = '/'.join(tic[i:i + 4] for i in range(0, len(tic), 4))
@@ -60,15 +68,38 @@ def generate_uri(tic: str, sector: str) -> str:
     return uri
 
 
-def download_fits_of_tic(mission, tic: str, sector: int) -> None:
+def download_fits_of_tic(mission: MastMissionsClass, tic: str, sector: str) -> None:
+    """
+    Download the lightcurve FITS files for a given TIC ID and a sector.
+
+    :param mission: The TESS MastMission object
+    :param tic: The TIC ID
+    :param sector: The sector of the TIC
+    :return:
+    """
     result = mission.download_file(generate_uri(tic, sector), local_path="")
     print(result)
+
+
+def download_fits(tic_to_sectors: dict[str, list[str]]) -> None:
+    """
+    Download the lightcurve FITS files.
+
+    :param tic_to_sectors: A dictionary mapping TIC ID to list of sectors.
+    :return:
+    """
+    mission = MastMissions(mission='tess')
+
+    for tic, sectors in tic_to_sectors.items():
+        for sector in sectors:
+            download_fits_of_tic(mission, tic, sector)
 
 
 def main():
     toi_df = get_toi_df()
     toi_df = filter_positive_toi_df(toi_df)
     tic_to_sectors = get_tic_to_sectors(toi_df)
+    download_fits(tic_to_sectors)
 
 
 if __name__ == "__main__":
