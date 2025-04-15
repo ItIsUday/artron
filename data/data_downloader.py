@@ -45,7 +45,7 @@ def get_tic_to_sectors(toi_df: pd.DataFrame) -> dict[str, list[str]]:
     """
     tic_dict = {}
     for tic, sectors in zip(toi_df['TIC ID'], toi_df['Sectors']):
-        sectors = list(filter(lambda sector: sector in SECTORS, sectors.split(',')))
+        sectors = list(filter(lambda sector: int(sector) in SECTORS, sectors.split(',')))
         if sectors:
             tic_dict[tic] = sectors
 
