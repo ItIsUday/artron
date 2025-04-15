@@ -68,38 +68,40 @@ def generate_uri(tic: str, sector: str) -> str:
     return uri
 
 
-def download_fits_of_tic(mission: MastMissionsClass, tic: str, sector: str) -> None:
+def download_fits_of_tic(mission: MastMissionsClass, tic: str, sector: str, path: str) -> None:
     """
     Download the lightcurve FITS files for a given TIC ID and a sector.
 
     :param mission: The TESS MastMission object
     :param tic: The TIC ID
     :param sector: The sector of the TIC
+    :param path: The path to save the FITS files to
     :return:
     """
-    result = mission.download_file(generate_uri(tic, sector), local_path="")
+    result = mission.download_file(generate_uri(tic, sector), local_path=path)
     print(result)
 
 
-def download_fits(tic_to_sectors: dict[str, list[str]]) -> None:
+def download_fits(tic_to_sectors: dict[str, list[str]], path: str) -> None:
     """
     Download the lightcurve FITS files.
 
     :param tic_to_sectors: A dictionary mapping TIC ID to list of sectors.
+    :param path: The path to save the FITS files to
     :return:
     """
     mission = MastMissions(mission='tess')
 
     for tic, sectors in tic_to_sectors.items():
         for sector in sectors:
-            download_fits_of_tic(mission, tic, sector)
+            download_fits_of_tic(mission, tic, sector, path)
 
 
 def main():
     toi_df = get_toi_df()
     toi_df = filter_positive_toi_df(toi_df)
     tic_to_sectors = get_tic_to_sectors(toi_df)
-    download_fits(tic_to_sectors)
+    download_fits(tic_to_sectors, "positive")
 
 
 if __name__ == "__main__":
