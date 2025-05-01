@@ -20,6 +20,10 @@ tqdm = "^4.67.1"
 exofop = "^0.0.2"
 
 
+
+[tool.poetry.group.dev.dependencies]
+black = "^25.1.0"
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
