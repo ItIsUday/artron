@@ -1,10 +1,14 @@
 import os
+from typing import Mapping, Iterable
 
 import pandas as pd
 from astroquery.mast import MastMissions, MastMissionsClass
 
 CONSIDERED_SECTORS = range(1, 27)
 EXOFOP_TOI_URL = "https://exofop.ipac.caltech.edu/tess/download_toi.php?sort=toi?&output=csv"
+Sector = str
+TOI_ID = str
+
 
 def get_toi_df(url: str) -> pd.DataFrame:
     """
@@ -36,7 +40,7 @@ def filter_positive_toi_df(toi_df: pd.DataFrame) -> pd.DataFrame:
     return toi_df[toi_df['TFOPWG Disposition'].isin(['CP', 'KP'])]
 
 
-def get_tic_to_sectors(toi_df: pd.DataFrame) -> dict[str, list[str]]:
+def get_tic_to_sectors(toi_df: pd.DataFrame) -> Mapping[TOI_ID, Iterable[Sector]]:
     """
     Given the toi_df, it generates a dictionary mapping TIC ID to list of sectors in the given range.
 
@@ -82,7 +86,7 @@ def download_fits_of_tic(mission: MastMissionsClass, tic: str, sector: str, path
     print(result)
 
 
-def download_fits(tic_to_sectors: dict[str, list[str]], path: str) -> None:
+def download_fits(tic_to_sectors: Mapping[str, Iterable[str]], path: str) -> None:
     """
     Download the lightcurve FITS files.
 
@@ -98,7 +102,7 @@ def download_fits(tic_to_sectors: dict[str, list[str]], path: str) -> None:
 
 
 def main():
-    toi_df = get_toi_df()
+    toi_df = get_toi_df(EXOFOP_TOI_URL)
     toi_df = filter_positive_toi_df(toi_df)
     tic_to_sectors = get_tic_to_sectors(toi_df)
     download_fits(tic_to_sectors, "positive")
