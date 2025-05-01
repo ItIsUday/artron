@@ -6,8 +6,23 @@ authors = ["Uday <iamuday1618@gmail.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.12"
+python = "^3.11"
+pandas = "^2.2.3"
+astroquery = "^0.4.10"
 
+[tool.poetry.group.scratch.dependencies]
+astropy = "^7.0.1"
+matplotlib = "^3.10.1"
+numpy = "^2.2.4"
+notebook = "^7.3.3"
+pandas = "^2.2.3"
+tqdm = "^4.67.1"
+exofop = "^0.0.2"
+
+
+
+[tool.poetry.group.dev.dependencies]
+black = "^25.1.0"
 
 [build-system]
 requires = ["poetry-core"]
