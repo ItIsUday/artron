@@ -3,23 +3,23 @@ import os
 import pandas as pd
 from astroquery.mast import MastMissions, MastMissionsClass
 
-SECTORS = range(1, 27)
+CONSIDERED_SECTORS = range(1, 27)
+EXOFOP_TOI_URL = "https://exofop.ipac.caltech.edu/tess/download_toi.php?sort=toi?&output=csv"
 
-
-def get_toi_df() -> pd.DataFrame:
+def get_toi_df(url: str) -> pd.DataFrame:
     """
     Fetch ExoFOP TOIs list, caching the CSV locally.
+    :param url: ExoFOP TESS table URL
 
     :return: TOIs list as a pandas.DataFrame
     """
-    exofop_toi_url = "https://exofop.ipac.caltech.edu/tess/download_toi.php?sort=toi?&output=csv"
     cache_file = "exofop_toi.csv"
     if os.path.exists(cache_file):
         print(f"Loading TOI data from cache: {cache_file}")
         toi_df = pd.read_csv(cache_file)
     else:
-        print(f"Downloading TOI data from: {exofop_toi_url}")
-        toi_df = pd.read_csv(exofop_toi_url)
+        print(f"Downloading TOI data from: {url}")
+        toi_df = pd.read_csv(url)
         toi_df.to_csv(cache_file, index=False)
         print(f"Cached TOI data to: {cache_file}")
 
@@ -45,7 +45,7 @@ def get_tic_to_sectors(toi_df: pd.DataFrame) -> dict[str, list[str]]:
     """
     tic_dict = {}
     for tic, sectors in zip(toi_df['TIC ID'], toi_df['Sectors']):
-        sectors = list(filter(lambda sector: int(sector) in SECTORS, sectors.split(',')))
+        sectors = list(filter(lambda sector: int(sector) in CONSIDERED_SECTORS, sectors.split(',')))
         if sectors:
             tic_dict[tic] = sectors
 
